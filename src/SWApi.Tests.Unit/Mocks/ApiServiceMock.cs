@@ -55,7 +55,7 @@ namespace SWApi.Tests.Unit.Mocks
             if (!int.TryParse(query.Get("page"), out var page))
                 page = 1;
 
-            var starships = Starships.Skip((page - 1) * pageCount).Take(pageCount).ToList();
+            var pageStarships = Starships.Skip((page - 1) * pageCount).Take(pageCount).ToList();
             query["page"] = (page + 1).ToString();
             uri.Query = query.ToString();
 
@@ -63,7 +63,7 @@ namespace SWApi.Tests.Unit.Mocks
                 new StarshipsResponse()
                 {
                     Count = Starships.Count,
-                    Starships = starships,
+                    Starships = pageStarships,
                     NextPageUrl = page * pageCount < Starships.Count ? uri.ToString() : null
                 }));
         }

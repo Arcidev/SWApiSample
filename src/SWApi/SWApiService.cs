@@ -11,8 +11,7 @@ namespace SWApi
         private readonly IApiService service;
 
         private const string baseUrl = "https://swapi.co/api";
-
-        private string StarshipsUrl => $"{baseUrl}/starships";
+        private static readonly string starshipsUrl = $"{baseUrl}/starships";
 
         /// <summary>
         /// Creates new instance of SWApiService
@@ -29,7 +28,7 @@ namespace SWApi
         /// <returns>All starships contained in SWApi endpoint</returns>
         public async Task<List<Starship>> GetAllStarships()
         {
-            var response = new StarshipsResponse() { NextPageUrl = StarshipsUrl };
+            var response = new StarshipsResponse() { NextPageUrl = starshipsUrl };
             var result = new List<Starship>();
             do
             {
@@ -48,13 +47,13 @@ namespace SWApi
         /// <returns>All starships contained in SWApi endpoint</returns>
         public async Task<List<Starship>> GetAllStarshipsParallelly()
         {
-            var responseStr = await service.GetRequestAsync(StarshipsUrl);
+            var responseStr = await service.GetRequestAsync(starshipsUrl);
             var response = JsonConvert.DeserializeObject<StarshipsResponse>(responseStr);
 
             // Create enumartion of tasks for every page (skipping first) so we can create async request for every page without sequentional wait
-            // We will use an ecuation for pageCount as: (records - 1) / recordsPerPage + 1;
+            // We will use an equation for pageCount as: (records - 1) / recordsPerPage + 1;
             // In this case records: response.Count, recordsPerPage: response.Starships.Count without adding 1 as we already have the first page
-            var tasks = Enumerable.Range(2, (response.Count - 1) / response.Starships.Count).Select(i => service.GetRequestAsync($"{StarshipsUrl}/?page={i}"));
+            var tasks = Enumerable.Range(2, (response.Count - 1) / response.Starships.Count).Select(i => service.GetRequestAsync($"{starshipsUrl}/?page={i}"));
             var allStarships = (await Task.WhenAll(tasks)).Select(x => JsonConvert.DeserializeObject<StarshipsResponse>(x).Starships).SelectMany(x => x);
 
             response.Starships.AddRange(allStarships);
