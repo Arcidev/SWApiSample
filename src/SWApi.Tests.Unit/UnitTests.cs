@@ -71,17 +71,18 @@ namespace SWApi.Tests.Unit
             Assert.NotNull(StarshipApiServiceMock.Starships);
             Assert.NotEmpty(StarshipApiServiceMock.Starships);
 
-            var service = new StarshipApiServiceMock();
+            var mockService = new StarshipApiServiceMock();
             var items = new List<Starship>();
             var response = new StarshipsResponse() { NextPageUrl = "localhost" };
 
             do
             {
-                var result = await service.GetRequestAsync(response.NextPageUrl);
+                var result = await mockService.GetRequestAsync(response.NextPageUrl);
                 Assert.NotNull(result);
 
                 response = JsonConvert.DeserializeObject<StarshipsResponse>(result);
-                Assert.NotNull(response?.Starships);
+                Assert.NotNull(response);
+                Assert.NotNull(response.Starships);
 
                 items.AddRange(response.Starships);
             } while (response.NextPageUrl != null);

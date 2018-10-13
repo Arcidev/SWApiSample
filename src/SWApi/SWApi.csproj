@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\Personal\Projects\SWApiSample\src\SWApi\SWApi.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\netstandard2.0\SWApi.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>D:\Personal\Projects\SWApiSample\src\SWApi\SWApi.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\netstandard2.0\SWApi.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
