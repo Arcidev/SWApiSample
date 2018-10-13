@@ -37,9 +37,11 @@ namespace SWApi.Models
             if (!consumables.HasValue || consumables == 0)
                 return null;
 
-            // Adding 1 will ensure that in case distance and distanceToRefull are equal the result will be 0 instead of 1
-            // without affecting other cases
-            return distance / (mglt * consumables + 1);
+            var hoursToRefill = mglt * consumables;
+            var result = distance / hoursToRefill;
+
+            // Subtract 1 stop if distance is multiplication of hoursToRefill as we've arrived into destination when stop is required
+            return distance % hoursToRefill == 0 ? --result : result;
         }
 
         private int? GetHoursFromConsumables()

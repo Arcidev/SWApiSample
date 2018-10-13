@@ -13,7 +13,7 @@ namespace SWApi.Tests.Unit.Mocks
     /// <summary>
     /// Mock of the API Service used to make basic requests against an external service
     /// </summary>
-    internal class StarshipApiServiceMock : IApiService
+    public class StarshipApiServiceMock : IApiService
     {
         private static readonly object locker = new object();
         private static List<Starship> starships;
