@@ -7,8 +7,6 @@ namespace SWApi.Tests.Integration
 {
     public class IntegrationTests
     {
-        private const int numberOfStops = 1_000_000;
-
         private static readonly SWApiService service = new SWApiService(new ApiService());
 
         [Fact]
