@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using SWApi.Enums;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SWApi.Tests.Integration
@@ -24,19 +26,21 @@ namespace SWApi.Tests.Integration
         }
 
         [Fact]
-        public async Task TestStarshipStopsCalculation()
+        public async Task TestStarshipConsumables()
         {
             var result = await service.GetAllStarshipsParallelly();
             foreach (var item in result)
             {
                 // Check that all values within consumables are handled
-                if (item.Consumables?.Split().Length == 2 && int.TryParse(item.MGLT, out var _))
+                var consumables = item.Consumables?.Split();
+                if (consumables?.Length == 2)
                 {
-                    Assert.NotNull(item.CalculateStops(numberOfStops));
-                    continue;
-                }
+                    // Assuming this is always number so in case it's not it would be nice to know
+                    Assert.True(int.TryParse(consumables[0], out var _), $"Invalid number for consumable: {item.Consumables}");
 
-                Assert.Null(item.CalculateStops(numberOfStops));
+                    // Assuming this is always time period and is defined within enum so in case it's not it would be nice to know
+                    Assert.True(Enum.TryParse(consumables[1], true, out ConsumableTime _), $"Invalid time period for consumable: {item.Consumables}");
+                }
             }
         }
     }

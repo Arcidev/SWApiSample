@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace SWApi.Models
 {
+    /// <summary>
+    /// Response container for starships request
+    /// </summary>
     public class StarshipsResponse
     {
         /// <summary>

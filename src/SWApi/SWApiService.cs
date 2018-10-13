@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SWApi
 {
+    /// <summary>
+    /// Star Wars API Service
+    /// </summary>
     public class SWApiService
     {
         private readonly IApiService service;

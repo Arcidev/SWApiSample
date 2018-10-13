@@ -4,6 +4,9 @@ using System;
 
 namespace SWApi.Models
 {
+    /// <summary>
+    /// Starship model provided from Star Wars API
+    /// </summary>
     public class Starship
     {
         /// <summary>
@@ -27,7 +30,7 @@ namespace SWApi.Models
         /// Calculates required stops for this starship based on distance
         /// </summary>
         /// <param name="distance">Distance to be made</param>
-        /// <returns>Stops required to make the flight if <see cref="MGLT"> and <see cref="Consumables"> are known, otherwise null</returns>
+        /// <returns>Stops required to make the flight if <see cref="MGLT"/> and <see cref="Consumables"/> are known, otherwise null</returns>
         public int? CalculateStops(int distance)
         {
             if (!int.TryParse(MGLT, out var mglt) || mglt == 0)
