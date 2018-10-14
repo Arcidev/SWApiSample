@@ -1,6 +1,7 @@
 ﻿using SWApi;
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SWApiSample
@@ -20,10 +21,16 @@ namespace SWApiSample
             }
 
             var swApi = new SWApiService(new ApiService());
-            var result = await swApi.GetAllStarshipsParallelly();
-
-            foreach (var starship in result.OrderBy(x => x.Name))
-                Console.WriteLine($"{starship.Name}: {starship.CalculateStops(distance)?.ToString() ?? "unknown"}");
+            try
+            {
+                var result = await swApi.GetAllStarshipsParallelly();
+                foreach (var starship in result.OrderBy(x => x.Name))
+                    Console.WriteLine($"{starship.Name}: {starship.CalculateStops(distance)?.ToString() ?? "unknown"}");
+            }
+            catch(HttpRequestException)
+            {
+                Console.WriteLine("There was an error while communicating with SW API");
+            }
         }
     }
 }

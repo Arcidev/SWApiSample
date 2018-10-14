@@ -6,7 +6,6 @@ using SWApi.Tests.Unit.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -25,6 +24,12 @@ namespace SWApi.Tests.Unit
         public void TestNullApiService()
         {
             Assert.Throws<ArgumentNullException>(() => new SWApiService(null));
+        }
+
+        [Fact]
+        public async Task TestNullResponse()
+        {
+            await TestStarshipsCollection(null, (starships) => { Assert.NotNull(starships); Assert.Empty(starships); });
         }
 
         [Fact]

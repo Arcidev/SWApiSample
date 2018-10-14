@@ -65,7 +65,7 @@ namespace SWApi
             // We will use an equation for pageCount as: (records - 1) / recordsPerPage + 1;
             // In this case records: response.Count, recordsPerPage: response.Starships.Count without adding 1 as we already have the first page
             var tasks = Enumerable.Range(2, (response.Count - 1) / response.Starships.Count).Select(i => service.GetRequestAsync($"{starshipsUrl}/?page={i}"));
-            var allStarships = (await Task.WhenAll(tasks)).Select(x => JsonConvert.DeserializeObject<StarshipsResponse>(x).Starships).Where(x => x != null).SelectMany(x => x);
+            var allStarships = (await Task.WhenAll(tasks)).Select(x => JsonConvert.DeserializeObject<StarshipsResponse>(x)?.Starships).Where(x => x != null).SelectMany(x => x);
 
             response.Starships.AddRange(allStarships);
             return response.Starships;
