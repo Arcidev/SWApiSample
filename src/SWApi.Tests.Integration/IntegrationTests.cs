@@ -41,5 +41,20 @@ namespace SWApi.Tests.Integration
                 }
             }
         }
+
+        [Fact]
+        public async Task TestStarshipParallelGetOrder()
+        {
+            var starships = await service.GetAllStarships();
+            var starships2 = await service.GetAllStarshipsParallelly();
+
+            Assert.Equal(starships.Count, starships2.Count);
+            for (int i = 0; i < starships.Count; i++)
+            {
+                Assert.Equal(starships[i].Name, starships2[i].Name);
+                Assert.Equal(starships[i].MGLT, starships2[i].MGLT);
+                Assert.Equal(starships[i].Consumables, starships2[i].Consumables);
+            }
+        }
     }
 }

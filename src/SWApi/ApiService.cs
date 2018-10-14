@@ -8,7 +8,12 @@ namespace SWApi
     /// </summary>
     public class ApiService : IApiService
     {
-        /// <inheritdoc />
+        /// <summary>
+        /// Makes get request with defined url
+        /// </summary>
+        /// <param name="url">Url against which a request will be made</param>
+        /// <returns>Content as string from the requested url</returns>
+        /// <exception cref="HttpRequestException">Thrown when unsuccessful status code</exception>
         public async Task<string> GetRequestAsync(string url)
         {
             using (var client = new HttpClient())

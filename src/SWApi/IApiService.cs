@@ -8,10 +8,10 @@ namespace SWApi
     public interface IApiService
     {
         /// <summary>
-        /// Makes get request with defiend url
+        /// Makes get request with defined url
         /// </summary>
         /// <param name="url">Url against which a request will be made</param>
-        /// <returns>Result in string from the requested url</returns>
+        /// <returns>Content as string from the requested url</returns>
         Task<string> GetRequestAsync(string url);
     }
 }

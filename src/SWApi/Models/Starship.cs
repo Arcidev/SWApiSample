@@ -43,7 +43,7 @@ namespace SWApi.Models
             var hoursToRefill = mglt * consumables;
             var result = distance / hoursToRefill;
 
-            // Subtract 1 stop if distance is multiplication of hoursToRefill as we've arrived into destination when stop is required
+            // Subtract 1 stop if distance is multiplication of hoursToRefill as we've already arrived into destination when stop is required
             return distance % hoursToRefill == 0 ? --result : result;
         }
 

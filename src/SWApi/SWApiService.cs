@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SWApi.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,15 +15,16 @@ namespace SWApi
         private readonly IApiService service;
 
         private const string baseUrl = "https://swapi.co/api";
-        private static readonly string starshipsUrl = $"{baseUrl}/starships";
+        private const string starshipsUrl = baseUrl + "/starships";
 
         /// <summary>
         /// Creates new instance of SWApiService
         /// </summary>
         /// <param name="service">API service to be used to perform GET requests</param>
+        /// <exception cref="ArgumentNullException">Thrown when <see cref="service"/> is null</exception>
         public SWApiService(IApiService service)
         {
-            this.service = service;
+            this.service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         /// <summary>
@@ -37,7 +39,9 @@ namespace SWApi
             {
                 var responseStr = await service.GetRequestAsync(response.NextPageUrl);
                 response = JsonConvert.DeserializeObject<StarshipsResponse>(responseStr);
-                result.AddRange(response.Starships);
+
+                if (response?.Starships != null)
+                    result.AddRange(response.Starships);
 
             } while (!string.IsNullOrEmpty(response?.NextPageUrl));
 
@@ -57,7 +61,7 @@ namespace SWApi
             // We will use an equation for pageCount as: (records - 1) / recordsPerPage + 1;
             // In this case records: response.Count, recordsPerPage: response.Starships.Count without adding 1 as we already have the first page
             var tasks = Enumerable.Range(2, (response.Count - 1) / response.Starships.Count).Select(i => service.GetRequestAsync($"{starshipsUrl}/?page={i}"));
-            var allStarships = (await Task.WhenAll(tasks)).Select(x => JsonConvert.DeserializeObject<StarshipsResponse>(x).Starships).SelectMany(x => x);
+            var allStarships = (await Task.WhenAll(tasks)).Select(x => JsonConvert.DeserializeObject<StarshipsResponse>(x).Starships).Where(x => x != null).SelectMany(x => x);
 
             response.Starships.AddRange(allStarships);
             return response.Starships;

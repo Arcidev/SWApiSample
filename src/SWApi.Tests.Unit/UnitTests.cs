@@ -6,6 +6,7 @@ using SWApi.Tests.Unit.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -16,14 +17,39 @@ namespace SWApi.Tests.Unit
         private const int testIterations = 100;
         private const int numberOfStops = 1_000_000;
         private const string mglt = "20";
-        private static readonly string consumables = $"2 {ConsumableTime.Months}";
+        private const string consumables = "2 " + nameof(ConsumableTime.Months);
 
         private static readonly SWApiService service = new SWApiService(new StarshipApiServiceMock());
 
         [Fact]
+        public void TestNullApiService()
+        {
+            Assert.Throws<ArgumentNullException>(() => new SWApiService(null));
+        }
+
+        [Fact]
+        public async Task TestNullStarshipCollection()
+        {
+            // Init mock to get all data in 1 request
+            var mock = new Mock<IApiService>();
+            mock.Setup(x => x.GetRequestAsync(It.IsNotNull<string>())).Returns(Task.FromResult(JsonConvert.SerializeObject(new StarshipsResponse()
+            {
+                Count = 0,
+                Starships = null
+            })));
+
+            var mockService = new SWApiService(mock.Object);
+            var starships = await mockService.GetAllStarships();
+
+            Assert.NotNull(starships);
+            Assert.Empty(starships);
+        }
+
+        [Fact]
         public async Task TestGetStarships()
         {
-            var mock = new Mock<StarshipApiServiceMock>();
+            // Init mock to get all data in 1 request
+            var mock = new Mock<IApiService>();
             mock.Setup(x => x.GetRequestAsync(It.IsNotNull<string>())).Returns(Task.FromResult(JsonConvert.SerializeObject(new StarshipsResponse()
             {
                 Count = StarshipApiServiceMock.Starships.Count,
@@ -31,8 +57,13 @@ namespace SWApi.Tests.Unit
             })));
 
             var mockService = new SWApiService(mock.Object);
-            Assert.NotEmpty(await mockService.GetAllStarships());
-            Assert.NotEmpty(await mockService.GetAllStarshipsParallelly());
+            var starships = await mockService.GetAllStarships();
+            var starships2 = await mockService.GetAllStarshipsParallelly();
+
+            Assert.NotEmpty(starships);
+            Assert.NotEmpty(starships2);
+            Assert.Equal(StarshipApiServiceMock.Starships.Count, starships.Count);
+            Assert.Equal(StarshipApiServiceMock.Starships.Count, starships2.Count);
         }
 
         [Fact]
@@ -41,7 +72,8 @@ namespace SWApi.Tests.Unit
             var secondPageUrl = "Second_Page_Url";
             var pageCount = StarshipApiServiceMock.Starships.Count / 2 + 1;
 
-            var mock = new Mock<StarshipApiServiceMock>();
+            // Init mock for 2 pages
+            var mock = new Mock<IApiService>();
             mock.Setup(x => x.GetRequestAsync(secondPageUrl)).Returns(Task.FromResult(JsonConvert.SerializeObject(new StarshipsResponse()
             {
                 Count = StarshipApiServiceMock.Starships.Count,
@@ -58,9 +90,9 @@ namespace SWApi.Tests.Unit
             var starships = await mockService.GetAllStarships();
 
             Assert.NotEmpty(starships);
-            Assert.NotEmpty(await mockService.GetAllStarshipsParallelly());
-
             Assert.Equal(StarshipApiServiceMock.Starships.Count, starships.Count);
+
+            // Order should match for both parallel and sequantional request
             for (int i = 0; i < StarshipApiServiceMock.Starships.Count; i++)
                 Assert.True(StarshipsEqual(starships[i], StarshipApiServiceMock.Starships[i]));
         }
@@ -144,6 +176,18 @@ namespace SWApi.Tests.Unit
             Assert.Null(new Starship() { MGLT = string.Empty, Consumables = string.Empty }.CalculateStops(numberOfStops));
             Assert.Null(new Starship() { MGLT = "unknown", Consumables = consumables }.CalculateStops(numberOfStops));
             Assert.Null(new Starship() { MGLT = mglt, Consumables = "unknown" }.CalculateStops(numberOfStops));
+        }
+
+        [Fact]
+        public async Task TestStarshipParallelGetOrder()
+        {
+            var slowService = new SWApiService(new StarshipSlowApiServiceMock());
+            var starships = await slowService.GetAllStarships();
+            var starships2 = await slowService.GetAllStarshipsParallelly();
+
+            Assert.Equal(starships.Count, starships2.Count);
+            for (int i = 0; i < starships.Count; i++)
+                Assert.True(StarshipsEqual(starships[i], starships2[i]));
         }
 
         private static bool StarshipsEqual(Starship starship, Starship starship2)
