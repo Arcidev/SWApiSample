@@ -58,6 +58,8 @@ namespace SWApi
         {
             var responseStr = await service.GetRequestAsync(starshipsUrl);
             var response = JsonConvert.DeserializeObject<StarshipsResponse>(responseStr);
+            if (string.IsNullOrEmpty(response?.NextPageUrl))
+                return response?.Starships ?? new List<Starship>();
 
             // Create enumartion of tasks for every page (skipping first) so we can create async request for every page without sequentional wait
             // We will use an equation for pageCount as: (records - 1) / recordsPerPage + 1;

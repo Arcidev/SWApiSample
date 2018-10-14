@@ -30,40 +30,21 @@ namespace SWApi.Tests.Unit
         [Fact]
         public async Task TestNullStarshipCollection()
         {
-            // Init mock to get all data in 1 request
-            var mock = new Mock<IApiService>();
-            mock.Setup(x => x.GetRequestAsync(It.IsNotNull<string>())).Returns(Task.FromResult(JsonConvert.SerializeObject(new StarshipsResponse()
+            await TestStarshipsCollection(new StarshipsResponse()
             {
                 Count = 0,
                 Starships = null
-            })));
-
-            var mockService = new SWApiService(mock.Object);
-            var starships = await mockService.GetAllStarships();
-
-            Assert.NotNull(starships);
-            Assert.Empty(starships);
+            }, (starships) => { Assert.NotNull(starships); Assert.Empty(starships); });
         }
 
         [Fact]
         public async Task TestGetStarships()
         {
-            // Init mock to get all data in 1 request
-            var mock = new Mock<IApiService>();
-            mock.Setup(x => x.GetRequestAsync(It.IsNotNull<string>())).Returns(Task.FromResult(JsonConvert.SerializeObject(new StarshipsResponse()
+            await TestStarshipsCollection(new StarshipsResponse()
             {
                 Count = StarshipApiServiceMock.Starships.Count,
                 Starships = StarshipApiServiceMock.Starships
-            })));
-
-            var mockService = new SWApiService(mock.Object);
-            var starships = await mockService.GetAllStarships();
-            var starships2 = await mockService.GetAllStarshipsParallelly();
-
-            Assert.NotEmpty(starships);
-            Assert.NotEmpty(starships2);
-            Assert.Equal(StarshipApiServiceMock.Starships.Count, starships.Count);
-            Assert.Equal(StarshipApiServiceMock.Starships.Count, starships2.Count);
+            }, (starships) => { Assert.NotEmpty(starships); Assert.Equal(StarshipApiServiceMock.Starships.Count, starships.Count); });
         }
 
         [Fact]
@@ -199,6 +180,19 @@ namespace SWApi.Tests.Unit
                 return false; // no need to check again
 
             return starship.Name == starship2.Name && starship.Consumables == starship2.Consumables && starship.MGLT == starship2.MGLT;
+        }
+
+        private async Task TestStarshipsCollection(StarshipsResponse response, Action<List<Starship>> test)
+        {
+            var mock = new Mock<IApiService>();
+            mock.Setup(x => x.GetRequestAsync(It.IsNotNull<string>())).Returns(Task.FromResult(JsonConvert.SerializeObject(response)));
+
+            var mockService = new SWApiService(mock.Object);
+            var starships = await mockService.GetAllStarships();
+            var starships2 = await mockService.GetAllStarshipsParallelly();
+
+            test.Invoke(starships);
+            test.Invoke(starships2);
         }
     }
 }
