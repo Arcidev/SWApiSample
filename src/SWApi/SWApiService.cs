@@ -39,11 +39,13 @@ namespace SWApi
             {
                 var responseStr = await service.GetRequestAsync(response.NextPageUrl);
                 response = JsonConvert.DeserializeObject<StarshipsResponse>(responseStr);
+                if (response == null)
+                    return result;
 
-                if (response?.Starships != null)
+                if (response.Starships != null)
                     result.AddRange(response.Starships);
 
-            } while (!string.IsNullOrEmpty(response?.NextPageUrl));
+            } while (!string.IsNullOrEmpty(response.NextPageUrl));
 
             return result;
         }
