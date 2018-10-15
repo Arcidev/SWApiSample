@@ -7,3 +7,6 @@
 
 ## Copyright
 [![License](https://img.shields.io/github/license/Arcidev/SWApiSample.svg?style=flat-square)](LICENSE)
+
+## Documentation
+[![Documentation](https://codedocs.xyz/Arcidev/SWApiSample.svg)](https://codedocs.xyz/Arcidev/SWApiSample/)
