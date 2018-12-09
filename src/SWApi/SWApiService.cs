@@ -37,8 +37,7 @@ namespace SWApi
             var result = new List<Starship>();
             do
             {
-                var responseStr = await service.GetRequestAsync(response.NextPageUrl);
-                response = JsonConvert.DeserializeObject<StarshipsResponse>(responseStr);
+                response = await service.GetRequestAsync<StarshipsResponse>(response.NextPageUrl);
                 if (response == null)
                     return result;
 
@@ -56,16 +55,15 @@ namespace SWApi
         /// <returns>All starships contained in SWApi endpoint</returns>
         public async Task<List<Starship>> GetAllStarshipsParallelly()
         {
-            var responseStr = await service.GetRequestAsync(starshipsUrl);
-            var response = JsonConvert.DeserializeObject<StarshipsResponse>(responseStr);
+            var response = await service.GetRequestAsync<StarshipsResponse>(starshipsUrl);
             if (string.IsNullOrEmpty(response?.NextPageUrl))
                 return response?.Starships ?? new List<Starship>();
 
             // Create enumartion of tasks for every page (skipping first) so we can create async request for every page without sequentional wait
             // We will use an equation for pageCount as: (records - 1) / recordsPerPage + 1;
             // In this case records: response.Count, recordsPerPage: response.Starships.Count without adding 1 as we already have the first page
-            var tasks = Enumerable.Range(2, (response.Count - 1) / response.Starships.Count).Select(i => service.GetRequestAsync($"{starshipsUrl}/?page={i}"));
-            var allStarships = (await Task.WhenAll(tasks)).Select(x => JsonConvert.DeserializeObject<StarshipsResponse>(x)?.Starships).Where(x => x != null).SelectMany(x => x);
+            var tasks = Enumerable.Range(2, (response.Count - 1) / response.Starships.Count).Select(i => service.GetRequestAsync<StarshipsResponse>($"{starshipsUrl}/?page={i}"));
+            var allStarships = (await Task.WhenAll(tasks)).Select(x => x?.Starships).Where(x => x != null).SelectMany(x => x);
 
             response.Starships.AddRange(allStarships);
             return response.Starships;

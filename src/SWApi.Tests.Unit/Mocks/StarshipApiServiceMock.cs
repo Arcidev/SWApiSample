@@ -67,5 +67,16 @@ namespace SWApi.Tests.Unit.Mocks
                     NextPageUrl = page * pageCount < Starships.Count ? uri.ToString() : null
                 }));
         }
+
+        /// <summary>
+        /// Mocks get request by providing data from file
+        /// </summary>
+        /// <param name="url">Url to be used. Only query param page is being used</param>
+        /// <returns>Starship response object</returns>
+        public async Task<T> GetRequestAsync<T>(string url) where T : class
+        {
+            var result = await GetRequestAsync(url);
+            return JsonConvert.DeserializeObject<T>(result);
+        }
     }
 }

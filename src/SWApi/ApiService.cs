@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using Newtonsoft.Json;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SWApi
@@ -28,6 +29,21 @@ namespace SWApi
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Makes get request with defined url
+        /// </summary>
+        /// <param name="url">Url against which a request will be made</param>
+        /// <returns>Content as object from the requested url</returns>
+        /// <exception cref="HttpRequestException">Thrown when unsuccessful status code</exception>
+        public async Task<T> GetRequestAsync<T>(string url) where T : class
+        {
+            var content = await GetRequestAsync(url);
+            if (string.IsNullOrEmpty(content))
+                return null;
+
+            return JsonConvert.DeserializeObject<T>(content);
         }
     }
 }

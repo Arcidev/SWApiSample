@@ -60,17 +60,17 @@ namespace SWApi.Tests.Unit
 
             // Init mock for 2 pages
             var mock = new Mock<IApiService>();
-            mock.Setup(x => x.GetRequestAsync(secondPageUrl)).Returns(Task.FromResult(JsonConvert.SerializeObject(new StarshipsResponse()
+            mock.Setup(x => x.GetRequestAsync<StarshipsResponse>(secondPageUrl)).Returns(Task.FromResult(new StarshipsResponse()
             {
                 Count = StarshipApiServiceMock.Starships.Count,
                 Starships = StarshipApiServiceMock.Starships.Skip(pageCount).ToList()
-            })));
-            mock.Setup(x => x.GetRequestAsync(It.IsNotIn(secondPageUrl))).Returns(Task.FromResult(JsonConvert.SerializeObject(new StarshipsResponse()
+            }));
+            mock.Setup(x => x.GetRequestAsync<StarshipsResponse>(It.IsNotIn(secondPageUrl))).Returns(Task.FromResult(new StarshipsResponse()
             {
                 Count = StarshipApiServiceMock.Starships.Count,
                 Starships = StarshipApiServiceMock.Starships.Take(pageCount).ToList(),
                 NextPageUrl = secondPageUrl
-            })));
+            }));
 
             var mockService = new SWApiService(mock.Object);
             var starships = await mockService.GetAllStarships();
@@ -191,6 +191,7 @@ namespace SWApi.Tests.Unit
         {
             var mock = new Mock<IApiService>();
             mock.Setup(x => x.GetRequestAsync(It.IsNotNull<string>())).Returns(Task.FromResult(JsonConvert.SerializeObject(response)));
+            mock.Setup(x => x.GetRequestAsync<StarshipsResponse>(It.IsNotNull<string>())).Returns(Task.FromResult(response));
 
             var mockService = new SWApiService(mock.Object);
             var starships = await mockService.GetAllStarships();
