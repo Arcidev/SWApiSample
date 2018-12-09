@@ -39,7 +39,7 @@ namespace SWApi
         /// <exception cref="HttpRequestException">Thrown when unsuccessful status code</exception>
         public async Task<T> GetRequestAsync<T>(string url) where T : class
         {
-            var content = await GetRequestAsync(url);
+            var content = await GetRequestAsync(url).ConfigureAwait(false);
             if (string.IsNullOrEmpty(content))
                 return null;
 

@@ -75,7 +75,7 @@ namespace SWApi.Tests.Unit.Mocks
         /// <returns>Starship response object</returns>
         public async Task<T> GetRequestAsync<T>(string url) where T : class
         {
-            var result = await GetRequestAsync(url);
+            var result = await GetRequestAsync(url).ConfigureAwait(false);
             return JsonConvert.DeserializeObject<T>(result);
         }
     }
