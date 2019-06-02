@@ -17,18 +17,12 @@ namespace SWApi
         /// <exception cref="HttpRequestException">Thrown when unsuccessful status code</exception>
         public async Task<string> GetRequestAsync(string url)
         {
-            using (var client = new HttpClient())
-            {
-                using (var response = await client.GetAsync(url))
-                {
-                    // Throws exception if an error occurs
-                    response.EnsureSuccessStatusCode();
-                    using (var content = response.Content)
-                    {
-                        return await content.ReadAsStringAsync();
-                    }
-                }
-            }
+            using var client = new HttpClient();
+            using var response = await client.GetAsync(url);
+            // Throws exception if an error occurs
+            response.EnsureSuccessStatusCode();
+            using var content = response.Content;
+            return await content.ReadAsStringAsync();
         }
 
         /// <summary>
