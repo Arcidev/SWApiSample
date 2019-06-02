@@ -37,7 +37,7 @@ namespace SWApi.Tests.Unit.Mocks
 
                     starships = new List<Starship>();
                     var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                    starships.AddRange(JsonConvert.DeserializeObject<List<Starship>>(File.ReadAllText($@"{path}\MOCK_DATA.json")));
+                    starships.AddRange(JsonConvert.DeserializeObject<List<Starship>>(File.ReadAllText($"{path}/MOCK_DATA.json")));
                     return starships;
                 }
             }
