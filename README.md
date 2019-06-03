@@ -7,7 +7,7 @@
 [![Codacy](https://img.shields.io/codacy/grade/eb83632603124745ba2256398d87b77d.svg?logo=codacy&style=flat-square)](https://www.codacy.com/app/Arcidev/SWApiSample?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Arcidev/SWApiSample&amp;utm_campaign=Badge_Grade)
 
 ## Copyright
-[![License](https://img.shields.io/github/license/Arcidev/SWApiSample.svg?logo=license&style=flat-square)](LICENSE)
+[![License](https://img.shields.io/github/license/Arcidev/SWApiSample.svg?style=flat-square)](LICENSE)
 
 ## Documentation
 [![Documentation](https://img.shields.io/badge/code-documented-brightgreen.svg?style=flat-square)](https://codedocs.xyz/Arcidev/SWApiSample/)
