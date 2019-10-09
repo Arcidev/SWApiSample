@@ -8,7 +8,7 @@ namespace SWApiSample
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static async Task Main()
         {
             int distance = 0;
             while (true)
