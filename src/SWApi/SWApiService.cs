@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using SWApi.Models;
+﻿using SWApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ namespace SWApi
     {
         private readonly IApiService service;
 
-        private const string baseUrl = "https://swapi.co/api";
+        private const string baseUrl = "https://swapi.dev/api";
         private const string starshipsUrl = baseUrl + "/starships";
 
         /// <summary>

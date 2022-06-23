@@ -7,7 +7,7 @@ namespace SWApi.Tests.Integration
 {
     public class IntegrationTests
     {
-        private static readonly SWApiService service = new SWApiService(new ApiService());
+        private static readonly SWApiService service = new(new ApiService());
 
         [Fact]
         public async Task TestGetStarshipsSequentially()

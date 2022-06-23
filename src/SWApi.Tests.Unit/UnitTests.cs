@@ -18,7 +18,7 @@ namespace SWApi.Tests.Unit
         private const string mglt = "20";
         private const string consumables = "2 " + nameof(ConsumableTime.Months);
 
-        private static readonly SWApiService service = new SWApiService(new StarshipApiServiceMock());
+        private static readonly SWApiService service = new (new StarshipApiServiceMock());
 
         [Fact]
         public void TestNullApiService()
@@ -187,7 +187,7 @@ namespace SWApi.Tests.Unit
             return starship.Name == starship2.Name && starship.Consumables == starship2.Consumables && starship.MGLT == starship2.MGLT;
         }
 
-        private async Task TestStarshipsCollection(StarshipsResponse response, Action<List<Starship>> test)
+        private static async Task TestStarshipsCollection(StarshipsResponse response, Action<List<Starship>> test)
         {
             var mock = new Mock<IApiService>();
             mock.Setup(x => x.GetRequestAsync(It.IsNotNull<string>())).Returns(Task.FromResult(JsonConvert.SerializeObject(response)));
